@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
-
 import java.util.List;
 
 @RestController
@@ -17,6 +16,7 @@ public class ControllerEstoque {
     @Autowired
     private ServiceEstoque estoqueService;
 
+    // Produtos
     @GetMapping("/produtos")
     public ResponseEntity<List<Produto>> listarProdutos() {
         List<Produto> produtos = estoqueService.listarProdutos();
@@ -38,31 +38,25 @@ public class ControllerEstoque {
 
     @PutMapping("/produtos/{id}")
     public ResponseEntity<Produto> atualizarProduto(@PathVariable Integer id, @RequestBody Produto produtoAtualizado) {
-        try {
-            Produto atualizado = estoqueService.atualizarProduto(id, produtoAtualizado);
-            return ResponseEntity.ok(atualizado);
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+        Produto atualizado = estoqueService.atualizarProduto(id, produtoAtualizado);
+        return ResponseEntity.ok(atualizado);
     }
 
     @DeleteMapping("/produtos/{id}")
     public ResponseEntity<Void> deletarProduto(@PathVariable Integer id) {
-        if (estoqueService.deletarProduto(id)) {
+        boolean deletado = estoqueService.deletarProduto(id);
+        if (deletado) {
             return ResponseEntity.noContent().build();
         } else {
             return ResponseEntity.notFound().build();
         }
     }
 
+    // Movimentações
     @PostMapping("/movimentacoes")
-    public ResponseEntity<?> registrarMovimentacao(@RequestBody MovimentacaoEstoque mov) {
-        try {
-            MovimentacaoEstoque registrada = estoqueService.registrarMovimentacao(mov);
-            return ResponseEntity.status(HttpStatus.CREATED).body(registrada);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
+    public ResponseEntity<MovimentacaoEstoque> registrarMovimentacao(@RequestBody MovimentacaoEstoque mov) {
+        MovimentacaoEstoque registrada = estoqueService.registrarMovimentacao(mov);
+        return ResponseEntity.status(HttpStatus.CREATED).body(registrada);
     }
 
     @GetMapping("/movimentacoes")
