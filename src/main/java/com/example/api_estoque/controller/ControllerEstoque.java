@@ -10,7 +10,7 @@ import org.springframework.http.HttpStatus;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/estoque")
 public class ControllerEstoque {
 
     @Autowired
